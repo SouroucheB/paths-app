@@ -1,9 +1,25 @@
+import { Header, Main } from "@/components";
+import { auth, currentUser } from "@clerk/nextjs/server";
+
 import { SignOutButton } from "@clerk/nextjs";
 
-export default function DashobardPage() {
+export default async function DashboardPage() {
+  const { userId } = auth();
+  const user = await currentUser();
+
+  if (!userId || !user || !user.firstName || !user.lastName) {
+    return null;
+  }
+
+  const simpleUser = {
+    firstName: user.firstName,
+    lastName: user.lastName,
+  };
+
   return (
-    <div className="flex min-h-screen flex-col items-center justify-between p-24">
-      <SignOutButton />
-    </div>
+    <>
+      <Header user={simpleUser} />
+      <Main>Dashboard</Main>
+    </>
   );
 }
